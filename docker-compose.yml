@@ -1,0 +1,24 @@
+
+networks:
+  traefik_network:
+    external: true
+
+services:
+  server-api:
+    container_name: nestjs
+    image: nestjs-api
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    networks:
+      - traefik_network 
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik_network"
+      - traefik.http.routers.server.rule=Host(`api.server.arifhosan.me`)
+      - "traefik.http.services.server.loadbalancer.server.port=8080"
+      - "traefik.http.routers.server.entrypoints=websecure,web"
+      - "traefik.http.routers.server.tls=true"
+      - traefik.http.routers.server.tls.certresolver=myresolver
