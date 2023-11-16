@@ -12,7 +12,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: prod
     networks:
       - traefik_network 
     labels:
