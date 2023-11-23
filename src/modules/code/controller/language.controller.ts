@@ -2,20 +2,25 @@ import { Controller, Get } from '@nestjs/common';
 import { LanguageService } from '../service/language.service';
 import { Language } from '../schema/language.schema';
 
-@Controller('code')
-export class CodeController {
+@Controller('languages')
+export class LanguageController {
   constructor(
     private languageService: LanguageService
   ) { }
 
-  @Get('update-language')
+  @Get('update')
   updateLanguge() {
     return this.languageService.updateLanguage();
   }
 
-  @Get('languages')
+  @Get('')
   async getLanguages(): Promise<Language[]> {
     return this.languageService.findAll();
+  }
+
+  @Get('selected')
+  async getSelectedLanguages(): Promise<Language[]> {
+    return this.languageService.findByIdIn([93,71,74,62,54,49 ]);
   }
 
 }

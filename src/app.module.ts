@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CodeModule } from './modules/code/code.module';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -15,7 +16,13 @@ import { CodeModule } from './modules/code/code.module';
         uri: config.get<string>('MONGODB_URI'),
       })
     }),
-    CodeModule
+    CodeModule,
+    RouterModule.register([
+      {
+          path: "api/code",
+          module: CodeModule,
+      },
+  ]),
   ],
   controllers: [AppController],
   providers: [AppService],
