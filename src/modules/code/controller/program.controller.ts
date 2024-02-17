@@ -8,13 +8,18 @@ export class ProgramController {
     private programService: ProgramService
   ) { }
 
-  @Post('')
+  @Post('submission')
   createSubmission(@Body() bodyDto: CreateProgramDto) {
     return this.programService.createSubmission(bodyDto)
   }
 
-  @Get(':uuid')
+  @Get('submission/:uuid')
   getSubmission(@Param() params: any) {
     return this.programService.getSubmission(params.uuid);
+  }
+
+  @Get(':id')
+  getProgram(@Param() params: any) {
+    return this.programService.getProgram(params.id);
   }
 }

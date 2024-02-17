@@ -38,4 +38,10 @@ export class ProgramService {
 
         return submission;
     }
+
+    async getProgram(id: string): Promise<Program> {
+        const program = await this.programModel.findById(id).exec();
+
+        return program;
+    }
 }
