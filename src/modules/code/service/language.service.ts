@@ -15,6 +15,13 @@ export class LanguageService {
         return this.languageModel.find().exec();
     }
 
+    async findByIdIn(ids: number[]): Promise<Language[]> {
+        return this.languageModel.find({ id: { $in: ids } }).exec();
+    }
+    async findById(id: number): Promise<Language> {
+        return this.languageModel.findOne({ id: id }).exec();
+    }
+
     async updateLanguage() {
         const languages = await this.languageModel.find().exec();
         const newLanguages = await this.apiService.fetchLanguages();
