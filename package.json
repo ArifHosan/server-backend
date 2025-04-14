@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "api-backend",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Several API endpoint for personal projects",
   "license": "MIT",
   "scripts": {
     "build": "nest build",
@@ -23,9 +23,12 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "axios": "^1.8.4",
+    "cache-manager": "^6.4.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
