@@ -20,14 +20,14 @@ export class HaController {
       } else {
         const httpsAgent = new Agent({ rejectUnauthorized: false });
         const response = await axios.get(ASEAG_ENDPOINT, { httpsAgent });
-        const data = response.data;
+        const data = response.data as Record<string, any>;
 
         await this.cacheManager.set(
           cacheKey,
           JSON.stringify(data),
           1000 * 60 * 10,
         );
-        return data as Record<string, any>;
+        return data;
       }
     });
   }
