@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable } from '@nestjs/common';
 import { SiteScraper } from './site.scrapper.interface';
 import puppeteer from 'puppeteer';
@@ -10,12 +13,15 @@ export class ExophaseScrapper implements SiteScraper {
   async scrape(): Promise<GameDTO[]> {
     try {
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
 
       const page = await browser.newPage();
-      await page.setViewport({ width: 1080, height: 1024 });
+      await page.setUserAgent(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
+      );
+      // await page.setViewport({ width: 1080, height: 1024 });
       await page.goto(this.baseUrl);
 
       const gameInfo = await page.evaluate(() => {
@@ -28,6 +34,9 @@ export class ExophaseScrapper implements SiteScraper {
           const title = el.querySelector('h3 a')?.textContent?.trim(); // Extract the game title
           const link = el.querySelector('h3 a')?.getAttribute('href'); // Extract the game link
           const playtimeText = el.querySelector('.hours')?.textContent?.trim(); // Extract the playtime text
+          const platform = el
+            .querySelector('.platforms span')
+            ?.textContent?.trim();
 
           if (title && playtimeText) {
             const timeMatch = playtimeText.match(/(\d+)h (\d+)m/);
@@ -35,7 +44,13 @@ export class ExophaseScrapper implements SiteScraper {
               const hours = parseInt(timeMatch[1], 10);
               const minutes = parseInt(timeMatch[2], 10);
               const playtimeMs = (hours * 60 + minutes) * 60 * 1000; // Convert to milliseconds
-              games.push({ title, link, playtimeMs });
+              games.push({
+                title,
+                link,
+                playtimeMs,
+                platform,
+                slug: '',
+              });
             }
           }
         });

@@ -19,6 +19,12 @@ export class Game {
   @Column()
   playtimeMs: number;
 
+  @Column({ default: '' })
+  slug: string;
+
+  @Column({ default: '' })
+  platform: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }
