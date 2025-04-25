@@ -1,4 +1,4 @@
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM canardconfit/puppeteer-docker:latest
 USER root
 WORKDIR /home/pptruser/app
 COPY package*.json ./
