@@ -22,7 +22,7 @@ export class ExophaseScrapper implements SiteScraper {
       await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36',
       );
-      // await page.setViewport({ width: 1080, height: 1024 });
+      await page.setViewport({ width: 1080, height: 1024 });
       await page.goto(this.baseUrl);
       await scrollUntilEnd(page);
 
@@ -71,7 +71,7 @@ export class ExophaseScrapper implements SiteScraper {
 
     async function scrollUntilEnd(
       page: Page,
-      pause = 1000,
+      pause = 3000,
       step = 50000,
     ): Promise<void> {
       let previousHeight = await page.evaluate(
@@ -81,7 +81,17 @@ export class ExophaseScrapper implements SiteScraper {
       while (true) {
         await page.evaluate((step) => window.scrollBy(0, step), step);
         await delay(pause);
+        const contentLoaded = await page
+          .waitForFunction(
+            `document.body.scrollHeight > ${previousHeight}`,
+            { timeout: 5000 }, // Adjust timeout if needed
+          )
+          .catch(() => false); // If no content loaded, catch the timeout and break out of loop
 
+        if (!contentLoaded) {
+          console.log('[Scroll] No new content loaded. Breaking out of loop.');
+          break; // No more content loaded or network timeout
+        }
         const currentHeight = await page.evaluate(
           () => document.body.scrollHeight,
         );
