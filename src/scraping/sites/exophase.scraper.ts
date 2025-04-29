@@ -14,7 +14,7 @@ export class ExophaseScrapper implements SiteScraper {
   async scrape(): Promise<GameDTO[]> {
     try {
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
 
@@ -87,6 +87,10 @@ export class ExophaseScrapper implements SiteScraper {
         );
 
         if (currentHeight === previousHeight) {
+          console.log(
+            '[Scroll] No more content to load. Current height:',
+            currentHeight,
+          );
           break; // no more content loaded
         }
 
