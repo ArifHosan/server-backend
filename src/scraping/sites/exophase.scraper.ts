@@ -43,7 +43,7 @@ export class ExophaseScrapper implements SiteScraper {
             if (timeMatch) {
               const hours = parseInt(timeMatch[1], 10);
               const minutes = parseInt(timeMatch[2], 10);
-              const playtimeMs = (hours * 60 + minutes) * 60 * 1000; // Convert to milliseconds
+              const playtimeMs = (hours * 60 + minutes) * 60; // Convert to milliseconds
               games.push({
                 title,
                 link,

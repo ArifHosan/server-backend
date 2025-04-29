@@ -13,10 +13,10 @@ export class Game {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ default: '' })
   link: string;
 
-  @Column()
+  @Column({ type: 'bigint' })
   playtimeMs: number;
 
   @Column({ default: '' })

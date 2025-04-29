@@ -1,3 +1,5 @@
+import { Playtime } from './../database/entities/playtime.entity';
+import { TotalGameTime } from './../database/entities/totalGameTime.entity';
 import { Module } from '@nestjs/common';
 import { ScrapingService } from './scraping.service';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -7,7 +9,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Game } from 'src/database/entities/game.entity';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), TypeOrmModule.forFeature([Game])],
+  imports: [
+    ScheduleModule.forRoot(),
+    TypeOrmModule.forFeature([Game, TotalGameTime, Playtime]),
+  ],
   providers: [ScrapingService, ExophaseScrapper],
   controllers: [ScrapingController],
 })
