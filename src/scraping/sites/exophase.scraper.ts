@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable } from '@nestjs/common';
 import { SiteScraper } from './site.scrapper.interface';
-import puppeteer from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
 import { GameDTO } from './game.dto';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class ExophaseScrapper implements SiteScraper {
   async scrape(): Promise<GameDTO[]> {
     try {
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
       });
 
@@ -23,6 +24,7 @@ export class ExophaseScrapper implements SiteScraper {
       );
       // await page.setViewport({ width: 1080, height: 1024 });
       await page.goto(this.baseUrl);
+      await scrollUntilEnd(page);
 
       const gameInfo = await page.evaluate(() => {
         const games: GameDTO[] = [];
@@ -61,6 +63,35 @@ export class ExophaseScrapper implements SiteScraper {
     } catch (error) {
       console.error('Error scraping site:', error);
       throw new Error('Error scraping site: ' + error.message);
+    }
+
+    async function delay(ms: number): Promise<void> {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function scrollUntilEnd(
+      page: Page,
+      pause = 1000,
+      step = 50000,
+    ): Promise<void> {
+      let previousHeight = await page.evaluate(
+        () => document.body.scrollHeight,
+      );
+
+      while (true) {
+        await page.evaluate((step) => window.scrollBy(0, step), step);
+        await delay(pause);
+
+        const currentHeight = await page.evaluate(
+          () => document.body.scrollHeight,
+        );
+
+        if (currentHeight === previousHeight) {
+          break; // no more content loaded
+        }
+
+        previousHeight = currentHeight;
+      }
     }
   }
 }
