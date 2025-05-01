@@ -25,15 +25,15 @@ export class ScrapingService {
     try {
       let scrapedCount = 0;
       const today = new Date().toISOString().split('T')[0];
-      let dailyTotalDelta = 0;
+      let dailyTotalDelta: number = 0;
 
       const games: GameDTO[] = await this.exophase.scrape();
 
       for (const game of games) {
         const slug = generateSlug(game.title + game.platform);
         const total = await this.totalGameTimeRepository.findOneBy({ slug });
-        const previousPlaytime = total?.totalMs ?? 0;
-        const deltaMs = game.playtimeMs - previousPlaytime;
+        const previousPlaytime: number = total?.totalMs ?? 0;
+        const deltaMs: number = game.playtimeMs - previousPlaytime;
 
         if (deltaMs <= 0) continue;
 
@@ -45,7 +45,7 @@ export class ScrapingService {
         });
 
         if (total) {
-          total.totalMs += deltaMs;
+          total.totalMs = Number(total.totalMs) + deltaMs;
           await this.totalGameTimeRepository.save(total);
         } else {
           await this.totalGameTimeRepository.save({
