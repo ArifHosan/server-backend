@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Injectable,
@@ -47,12 +48,17 @@ export class AuthService {
       email: user.email,
     });
 
-    return { access_token: token };
+    return { access_token: token, user: { id: user.id, email: user.email } };
   }
 
-  verify(token: string) {
+  async verify(token: string) {
     try {
-      return this.jwtService.verify(token);
+      const payload = this.jwtService.verify(token);
+      const user = await this.userRepo.findOneBy({ id: payload.sub });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      return { user: { id: user.id, email: user.email } };
     } catch {
       throw new UnauthorizedException('Invalid token');
     }
