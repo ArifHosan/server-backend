@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user.entity';
 
-@Entity('utilities')
-export class Utility {
+@Entity()
+export class Utilities {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,5 +13,14 @@ export class Utility {
   type: string;
 
   @Column('float')
-  unit: number;
+  value: number; // the numeric reading
+
+  @Column({ type: 'varchar', length: 20 })
+  unit: string; // unit of measurement, e.g. "m³", "liters"
+
+  @Column()
+  meterNumber: string;
+
+  @ManyToOne(() => User, (user) => user.utilities, { eager: true })
+  user: User;
 }
